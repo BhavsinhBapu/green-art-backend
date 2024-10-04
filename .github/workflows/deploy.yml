@@ -24,8 +24,15 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            # Navigate to the application directory
+            cd /home/gacv2/green-art-backend
+            
+            # Pull the latest changes
             git pull origin main 
+            
+            # Build the Docker image
             docker build -t orarise-backend:${{ env.COMMIT_HASH }} .
+            
             # Check if the container is running and stop it if it is
             CONTAINER_NAME="orarise-backend"
             if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
