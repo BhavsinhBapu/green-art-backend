@@ -16,11 +16,7 @@ jobs:
       - name: Get current commit hash
         id: vars
         run: echo "COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
-
-      - name: Build Docker image
-        run: |
-          docker build -t orarise-backend:${{ env.COMMIT_HASH }} .
-
+        
       - name: SSH to server and run Docker container
         uses: appleboy/ssh-action@v0.1.0
         with:
@@ -28,6 +24,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            docker build -t orarise-backend:${{ env.COMMIT_HASH }} .
             # Check if the container is running and stop it if it is
             CONTAINER_NAME="orarise-backend"
             if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
